@@ -131,7 +131,24 @@ router.get("/offerCategories/:_id", async (req, res) => {
 
   res.json(offerCategories);
 });
-
+// @route PUT api/v1/categories
+// @desc Update a given offers category
+// @access Public
+router.patch("/updateOffer/:_id", async (req,res) =>{
+  const given_offer_id = req.params._id;
+  console.log(given_offer_id);
+  const newUpdateOfferCategory= await OffersCategory.findByIdAndUpdate(
+    given_offer_id,
+    {name: req.body.name});
+    return res.json(newUpdateOfferCategory);
+});
+// @route PUT api/v1/categories
+// @desc Delete a given offers category
+// @access Public
+router.delete("/deleteOffer/:_id", async (req,res) =>{
+  const newUpdateOfferCategory= await OffersCategory.findByIdAndDelete(req.params._id);
+    return res.json(newUpdateOfferCategory);
+});
 // @route   DELETE api/v1/categories
 // @desc    Delete a sub category
 // @access  Admin
