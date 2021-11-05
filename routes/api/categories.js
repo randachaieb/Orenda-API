@@ -156,7 +156,10 @@ router.delete("/subCategory/:_id", admin, async (req, res) => {
   const newSubcategory = await Domain.findByIdAndDelete(req.params._id);
   return res.json(newSubcategory);
 });
-router.get("/subCategory/all", admin, async (req, res) => {
+// @route   GET api/v1/categories
+// @desc    Get all sub category
+// @access  Public
+router.get("/subCategory/all", async (req, res) => {
   const newSubcategory = await Domain.find();
   return res.json(newSubcategory);
 });
