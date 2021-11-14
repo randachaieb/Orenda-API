@@ -17,10 +17,12 @@ const {
 // @route   POST api/v1/categories
 // @desc    create a place Category
 // @access  Admin
-router.post("/placeCategory", admin, async (req, res) => {
+router.post("/placeCategory", async (req, res) => {
   const { error } = validatePlace(req.body);
   if (error) return res.json(error.details[0].message);
+  console.log(req.body.name);
   let newOfferCategory = new PlacesCategory({ ...req.body });
+  console.log("new: ", newOfferCategory);
   newOfferCategory = await newOfferCategory.save();
   if (!newOfferCategory) throw Error("Could not create place category");
   return res.json(newOfferCategory);
@@ -29,7 +31,7 @@ router.post("/placeCategory", admin, async (req, res) => {
 // @route   POST api/v1/categories
 // @desc    add a sub category
 // @access  Admin
-router.post("/places/:category_id/subCategory", admin, async (req, res) => {
+router.post("/places/:category_id/subCategory", async (req, res) => {
   const { category_id } = req.params;
   const { error } = validateDomain(req.body);
   if (error) return res.json(error.details[0].message);
@@ -134,27 +136,35 @@ router.get("/offerCategories/:_id", async (req, res) => {
 // @route PUT api/v1/categories
 // @desc Update a given offers category
 // @access Public
-router.patch("/updateOffer/:_id", async (req,res) =>{
+router.patch("/updateOffer/:_id", async (req, res) => {
   const given_offer_id = req.params._id;
   console.log(given_offer_id);
-  const newUpdateOfferCategory= await OffersCategory.findByIdAndUpdate(
+  const newUpdateOfferCategory = await PlacesCategory.findByIdAndUpdate(
     given_offer_id,
-    {name: req.body.name});
-    return res.json(newUpdateOfferCategory);
+    { name: req.body.name }
+  );
+  return res.json(newUpdateOfferCategory);
 });
 // @route PUT api/v1/categories
 // @desc Delete a given offers category
 // @access Public
-router.delete("/deleteOffer/:_id", async (req,res) =>{
-  const newUpdateOfferCategory= await OffersCategory.findByIdAndDelete(req.params._id);
-    return res.json(newUpdateOfferCategory);
+router.delete("/deleteOffer/:_id", async (req, res) => {
+  const newUpdateOfferCategory = await PlacesCategory.findByIdAndDelete(
+    req.params._id
+  );
+  return res.json(newUpdateOfferCategory);
 });
 // @route   DELETE api/v1/categories
 // @desc    Delete a sub category
 // @access  Admin
-router.delete("/subCategory/:_id", admin, async (req, res) => {
-  const newSubcategory = await Domain.findByIdAndDelete(req.params._id);
-  return res.json(newSubcategory);
+router.delete("/subCategory/:_id", async (req, res) => {
+  try {
+    await Domain.findByIdAndDelete(req.params._id);
+    return res.json({ success: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 // @route   GET api/v1/categories
 // @desc    Get all sub category
@@ -167,7 +177,7 @@ router.get("/subCategory/all", async (req, res) => {
 // @route   PUT api/v1/categories
 // @desc    Update a sub category
 // @access  Admin
-router.put("/subCategory/:_id", admin, async (req, res) => {
+router.put("/subCategory/:_id", async (req, res) => {
   console.log(req.params._id, req.body.name);
   const newSubcategory = await Domain.findByIdAndUpdate(
     req.params._id,
