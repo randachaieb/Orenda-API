@@ -11,12 +11,13 @@ const OffersCategorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  subCategory: [
+  /* subCategory: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Domain",
     },
   ],
+  to get it soon */
 });
 
 const validateOffer = (offer) => {

@@ -28,10 +28,12 @@ const cardSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "OffersCategory",
     },
+    /*
     domain: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Domain",
     },
+      to get it soon */
     // keywords: {
     //   type: [String],
     //   require: true,
@@ -57,9 +59,9 @@ const validateCard = (card) => {
         name: Joi.string().min(5).max(50).required(),
         description: Joi.string().required(),
         region: Joi.string().min(3).max(50).required(),
-        PlaceCategory: Joi.string().min(5).max(255),
-        OfferCategory: Joi.string().min(5).max(255),
-        domain: Joi.string().min(5).max(255).required(),
+        PlaceCategory: Joi.string().min(5).max(255) || '',
+        OfferCategory: Joi.string().min(5).max(255) || '',
+        //domain: Joi.string().min(5).max(255).required(),   to get it soon 
         user: Joi.string().min(5).max(255).required(),
         // keywords: Joi.array()
         //   .items(Joi.string().required())

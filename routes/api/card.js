@@ -17,7 +17,8 @@ const {
 
 const getCardsPages = async (query = {}, page = 0, perPage = 20) => {
   return await Card.find(query)
-    .populate({ path: "user", select: "name picture username" }).populate({path:"domain"}).populate({path:"PlaceCategory"}).populate({path:"OfferCategory"})
+    //.populate({ path: "user", select: "name picture username" }).populate({path:"domain"}).populate({path:"PlaceCategory"}).populate({path:"OfferCategory"})
+    .populate({ path: "user", select: "name picture username" }).populate({path:"PlaceCategory"}).populate({path:"OfferCategory"})
     .limit(perPage)
     .skip(perPage * page);
 };
@@ -47,13 +48,13 @@ router.post("/", auth, uploadImage.single("picture"), async (req, res) => {
       return res.status(400).json(error.details[0].message);
     }
 
-    let dom=req.body.domain.split(',')
+    //let dom=req.body.domain.split(',')
     const imageName = req.file.filename;
     const newCard = new Card({
       ...req.body,
       picture: `${fileUploadPaths.CART_IMAGE_URL}/${imageName}`,
       user: req.user._id,
-      domain:dom
+      //domain:dom
 
 
     });
@@ -193,7 +194,7 @@ const validate_update = (req) => {
     region: Joi.string().min(3).max(50),
     PlaceCategory: Joi.string().min(5).max(255),
     OfferCategory: Joi.string().min(5).max(255),
-    domain: Joi.string().min(5).max(255),
+    //domain: Joi.string().min(5).max(255),
     // keywords: Joi.array().items(Joi.string().required()),
     website: Joi.string(),
   };

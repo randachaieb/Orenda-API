@@ -11,12 +11,14 @@ const PlacesCategorySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  /*
   subCategory: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Domain",
     },
   ],
+  to get it soon */
 });
 
 const validatePlace = (place) => {
