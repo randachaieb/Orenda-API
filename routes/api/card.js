@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose=require("mongoose")
 const Joi = require("joi");
 const router = express.Router();
 const { join, basename } = require("path");
@@ -16,7 +17,7 @@ const {
 
 const getCardsPages = async (query = {}, page = 0, perPage = 20) => {
   return await Card.find(query)
-    .populate({ path: "user", select: "name picture username" })
+    .populate({ path: "user", select: "name picture username" }).populate({path:"domain"}).populate({path:"PlaceCategory"}).populate({path:"OfferCategory"})
     .limit(perPage)
     .skip(perPage * page);
 };
@@ -35,6 +36,8 @@ router.get("/", auth, async (req, res) => {
 // @desc    Add card
 // @access  private
 router.post("/", auth, uploadImage.single("picture"), async (req, res) => {
+
+
   if (!req.file) {
     return res.status(400).json({ message: "No image uploaded" });
   } else {
@@ -44,11 +47,15 @@ router.post("/", auth, uploadImage.single("picture"), async (req, res) => {
       return res.status(400).json(error.details[0].message);
     }
 
+    let dom=req.body.domain.split(',')
     const imageName = req.file.filename;
     const newCard = new Card({
       ...req.body,
       picture: `${fileUploadPaths.CART_IMAGE_URL}/${imageName}`,
       user: req.user._id,
+      domain:dom
+
+
     });
     moveFile(
       join(fileUploadPaths.FILE_UPLOAD_PATH, imageName),
@@ -118,7 +125,7 @@ router.delete("/delete", auth, async (req, res) => {
 // @access  private
 router.delete("/card_delete", auth, async (req, res) => {
   const { id } = req.body;
-  const card = await Card.findOne({ id, user: req.user._id });
+  const card = await Card.findOneAndRemove({ _id:id, user: req.user._id });
   if (card === null)
     return res.status(400).json({ message: "card not exists" });
   else {

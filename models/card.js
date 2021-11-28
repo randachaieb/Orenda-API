@@ -11,7 +11,7 @@ const cardSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
-        minlength: 50,
+
     },
     region: {
         type: String,
@@ -29,7 +29,7 @@ const cardSchema = new mongoose.Schema({
         ref: "OffersCategory",
     },
     domain: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         ref: "Domain",
     },
     // keywords: {
@@ -55,7 +55,7 @@ const cardSchema = new mongoose.Schema({
 const validateCard = (card) => {
     const schema = {
         name: Joi.string().min(5).max(50).required(),
-        description: Joi.string().min(50).required(),
+        description: Joi.string().required(),
         region: Joi.string().min(3).max(50).required(),
         PlaceCategory: Joi.string().min(5).max(255),
         OfferCategory: Joi.string().min(5).max(255),
